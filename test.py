@@ -1,3 +1,4 @@
-a='ma dai-wei 2019-09-11 111857.png'
-if a.endswith('jpg'and'png'):
-    print('lll')
+a='C:/Users/XuJiacheng/OneDrive/图片/头像.jpg'
+import re
+if re.match(r'.+/\.jpg',a):
+    print('jjjj')
