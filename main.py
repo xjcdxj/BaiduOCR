@@ -36,10 +36,8 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
     def parse(self):
         sender = self.sender()
         if sender == self.start_button:
-            if re.match(r'.+/.+\.(jpg)|(png)',self.lineEdit.text()):
+            if re.match(r'.+/.+\.(jpg)|(png)', self.lineEdit.text()):
                 QtWidgets.QMessageBox.warning(self, '警告', '图片错误', QtWidgets.QMessageBox.Ok)
-            # if not self.lineEdit.text().endswith('jpg' and 'png'):
-            #     QtWidgets.QMessageBox.warning(self, '警告', '图片错误', QtWidgets.QMessageBox.Ok)
             else:
                 t = Thread(target=self.start, args=())
                 t.start()
@@ -71,11 +69,9 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             text = ''
             for i in result:
                 text = text + i['words'] + '\n'
-                # self.textBrowser.append(i['words'] + '\n')
             self.signal.emit(text)
         except KeyError:
             self.signal.emit('失败！！！')
-        # print(text)
 
 
 if __name__ == '__main__':
