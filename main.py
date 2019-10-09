@@ -1,10 +1,12 @@
-from window import Ui_MainWindow
-from base import ocr_token
-from PyQt5 import QtCore, QtGui, QtWidgets
-import sys, json, base64
-from urllib import request, parse
-from threading import Thread
+import base64
+import json
 import re
+import sys
+from threading import Thread
+from urllib import request, parse
+from PyQt5 import QtCore, QtWidgets
+from base import ocr_token
+from window import Ui_MainWindow
 
 
 class App(QtWidgets.QMainWindow, Ui_MainWindow):
