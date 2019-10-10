@@ -10,7 +10,7 @@ from window import Ui_MainWindow
 
 
 class App(QtWidgets.QMainWindow, Ui_MainWindow):
-    signal = QtCore.pyqtSignal(str)
+    signal = QtCore.pyqtSignal(str, str)
 
     def __init__(self):
         super(App, self).__init__()
@@ -30,13 +30,16 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         self.image = QtWidgets.QFileDialog.getOpenFileName(self, '.')[0]
         self.lineEdit.setText(self.image)
 
-    def warn(self, info):
-        self.textBrowser.setText(info)
+    def warn(self, status, info):
+        if status == 'information':
+            self.textBrowser.setText(info)
+        elif status == 'warning':
+            QtWidgets.QMessageBox.information(self, ' 提示', info, QtWidgets.QMessageBox.Ok)
 
     def parse(self):
         sender = self.sender()
         if sender == self.start_button:
-            if re.match(r'.+/.+\.(jpg)|(png)', self.lineEdit.text()):
+            if not re.match(r'.+\.(jpg|png)', self.lineEdit.text()):
                 QtWidgets.QMessageBox.warning(self, '警告', '图片错误', QtWidgets.QMessageBox.Ok)
             else:
                 t = Thread(target=self.start, args=())
@@ -46,7 +49,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             self.choose_img()
 
     def start(self):
-        self.signal.emit('识别中。。。')
+        self.signal.emit('information', '识别中。。。')
         token = ocr_token()
         url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic'
         with open(self.image, 'rb') as f:
@@ -65,13 +68,16 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         result = response.read().decode()
         try:
             result = json.loads(result)['words_result']
-            self.signal.emit('')
-            text = ''
-            for i in result:
-                text = text + i['words'] + '\n'
-            self.signal.emit(text)
+            self.signal.emit('information', '')
+            if not result:
+                self.signal.emit('warning', '未识别出文字。')
+            else:
+                text = ''
+                for i in result:
+                    text = text + i['words'] + '\n'
+                self.signal.emit('information', text)
         except KeyError:
-            self.signal.emit('失败！！！')
+            self.signal.emit('warning', '失败！！！')
 
 
 if __name__ == '__main__':
