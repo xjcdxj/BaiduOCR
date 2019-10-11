@@ -55,29 +55,32 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         with open(self.image, 'rb') as f:
             image = f.read()
         image = base64.b64encode(image)
-        data = {
-            'access_token': token,
-            'image': image
-        }
-        header = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-        data = parse.urlencode(data).encode('utf-8')
-        rq = request.Request(url, headers=header, data=data)
-        response = request.urlopen(rq)
-        result = response.read().decode()
-        try:
-            result = json.loads(result)['words_result']
-            self.signal.emit('information', '')
-            if not result:
-                self.signal.emit('warning', '未识别出文字。')
-            else:
-                text = ''
-                for i in result:
-                    text = text + i['words'] + '\n'
-                self.signal.emit('information', text)
-        except KeyError:
-            self.signal.emit('warning', '失败！！！')
+        if len(image) > 4 * 1024 * 1024:
+            self.signal.emit('warning', '图片大小超过4MB')
+        else:
+            data = {
+                'access_token': token,
+                'image': image
+            }
+            header = {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+            data = parse.urlencode(data).encode('utf-8')
+            rq = request.Request(url, headers=header, data=data)
+            response = request.urlopen(rq)
+            result = response.read().decode()
+            try:
+                result = json.loads(result)['words_result']
+                self.signal.emit('information', '')
+                if not result:
+                    self.signal.emit('warning', '未识别出文字。')
+                else:
+                    text = ''
+                    for i in result:
+                        text = text + i['words'] + '\n'
+                    self.signal.emit('information', text)
+            except KeyError:
+                self.signal.emit('warning', '失败！！！')
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
-from aip import AipOcr
+import json
+import time
 from urllib import request, parse
-import json, time
+
+from aip import AipOcr
 
 
 def aip():
@@ -28,7 +30,6 @@ def ocr_token():
         'client_id': 'DRbVzkC2vgG7i6QcW3mPkqef',
         'client_secret': 'TU6ixTndecAlLHPznPVpqzewU3whQTwu'
     }
-
     token_data = parse.urlencode(data).encode('utf-8')
     rq = request.Request(token_url, data=token_data)
     rq.add_header('Content-Type', 'application/json; charset=UTF-8')
