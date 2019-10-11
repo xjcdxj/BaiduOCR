@@ -52,35 +52,40 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         self.signal.emit('information', '识别中。。。')
         token = ocr_token()
         url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic'
-        with open(self.image, 'rb') as f:
-            image = f.read()
-        image = base64.b64encode(image)
+        try:
+            with open(self.lineEdit.text(), 'rb') as f:
+                image = f.read()
+            image = base64.b64encode(image)
+        except FileNotFoundError:
+            self.signal.emit('warning', '未找到图片！')
+            exit()
         if len(image) > 4 * 1024 * 1024:
             self.signal.emit('warning', '图片大小超过4MB')
-        else:
-            data = {
-                'access_token': token,
-                'image': image
-            }
-            header = {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-            data = parse.urlencode(data).encode('utf-8')
-            rq = request.Request(url, headers=header, data=data)
-            response = request.urlopen(rq)
-            result = response.read().decode()
-            try:
-                result = json.loads(result)['words_result']
-                self.signal.emit('information', '')
-                if not result:
-                    self.signal.emit('warning', '未识别出文字。')
-                else:
-                    text = ''
-                    for i in result:
-                        text = text + i['words'] + '\n'
-                    self.signal.emit('information', text)
-            except KeyError:
-                self.signal.emit('warning', '失败！！！')
+            exit()
+
+        data = {
+            'access_token': token,
+            'image': image
+        }
+        header = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        data = parse.urlencode(data).encode('utf-8')
+        rq = request.Request(url, headers=header, data=data)
+        response = request.urlopen(rq)
+        result = response.read().decode()
+        try:
+            result = json.loads(result)['words_result']
+            self.signal.emit('information', '')
+            if not result:
+                self.signal.emit('warning', '未识别出文字。')
+            else:
+                text = ''
+                for i in result:
+                    text = text + i['words'] + '\n'
+                self.signal.emit('information', text)
+        except KeyError:
+            self.signal.emit('warning', '失败！！！')
 
 
 if __name__ == '__main__':
