@@ -1,6 +1,7 @@
 import json
 import time
 from urllib import request, parse
+import pickle
 
 from aip import AipOcr
 
@@ -16,9 +17,11 @@ def aip():
 
 def ocr_token():
     try:
-        with open('token', 'r') as f:
-            access_token = f.readline().rstrip()
-            validity = f.readline()
+        with open('token', 'rb') as f:
+            f = f.read()
+            token = pickle.loads(f)
+            access_token = token['token']
+            validity = token['validity']
             if access_token and validity:
                 if time.time() < float(validity):
                     return access_token
@@ -42,8 +45,12 @@ def ocr_token():
     access_token = json.loads(access_token)
     try:
         if access_token['access_token'] and access_token['expires_in']:
-            with open('token', 'w') as f:
-                f.write(access_token['access_token'] + '\n%s' % str(time.time() + int(access_token['expires_in'])))
+            token = {
+                'token': access_token['access_token'],
+                'validity': access_token['expires_in']
+            }
+            with open('token', 'wb') as f:
+                pickle.dump(token, f)
             return 0, access_token['access_token']
     except:
         if access_token['error'] and access_token['error_description']:
