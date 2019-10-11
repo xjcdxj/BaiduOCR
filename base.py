@@ -35,14 +35,18 @@ def ocr_token():
     rq.add_header('Content-Type', 'application/json; charset=UTF-8')
     try:
         access_token = request.urlopen(rq)
-    except Exception:
-        return 1, '访问token失败'
 
-    access_token.read().decode('utf-8')
+    except:
+        return 1, '访问token失败'
+    access_token = access_token.read().decode('utf-8')
     access_token = json.loads(access_token)
-    if access_token['access_token'] and access_token['expires_in']:
-        with open('token', 'w') as f:
-            f.write(access_token['access_token'] + '\n%s' % str(time.time() + int(access_token['expires_in'])))
-        return 0, access_token['access_token']
-    else:
-        return 1, access_token['error'] + '\n' + 'error_description'
+    try:
+        if access_token['access_token'] and access_token['expires_in']:
+            with open('token', 'w') as f:
+                f.write(access_token['access_token'] + '\n%s' % str(time.time() + int(access_token['expires_in'])))
+            return 0, access_token['access_token']
+    except:
+        if access_token['error'] and access_token['error_description']:
+            return 1, access_token['error'] + '\n' + access_token['error_description']
+        else:
+            return 1, '未知错误'

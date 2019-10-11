@@ -51,6 +51,10 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
     def start(self):
         self.signal.emit('information', '识别中。。。')
         token = ocr_token()
+        if token[0] == 1:
+            self.signal.emit('warning', token[1])
+            exit()
+        token = token[1]
         url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic'
         try:
             with open(self.lineEdit.text(), 'rb') as f:
