@@ -32,7 +32,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def warn(self, status, info):
         if status == 'information':
-            self.textBrowser.setText(info)
+            self.statusbar.showMessage(info)
         elif status == 'warning':
             QtWidgets.QMessageBox.information(self, ' 提示', info, QtWidgets.QMessageBox.Ok)
 
@@ -54,7 +54,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         if token[0] == 1:
             self.signal.emit('warning', token[1])
             exit()
-        token = token[1]
+        self.token = token[1]
         url = 'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic'
         try:
             with open(self.lineEdit.text(), 'rb') as f:
@@ -68,7 +68,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             exit()
 
         data = {
-            'access_token': token,
+            'access_token': self.token,
             'image': image
         }
         header = {
@@ -80,14 +80,18 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         result = response.read().decode()
         try:
             result = json.loads(result)['words_result']
-            self.signal.emit('information', '')
+            # self.signal.emit('information', '')
             if not result:
                 self.signal.emit('warning', '未识别出文字。')
             else:
                 text = ''
+
+                self.statusbar.showMessage('识别成功')
                 for i in result:
-                    text = text + i['words'] + '\n'
-                self.signal.emit('information', text)
+                    self.textBrowser.append(i['words']+'\n')
+                    # text = text + i['words'] + '\n'
+
+                # self.signal.emit('information', text)
         except KeyError:
             self.signal.emit('warning', '失败！！！')
 
