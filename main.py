@@ -3,8 +3,10 @@ import json
 import re
 import sys
 from threading import Thread
-from urllib import request, parse
+from urllib import parse, request
+
 from PyQt5 import QtCore, QtWidgets
+
 from base import ocr_token
 from window import Ui_MainWindow
 
@@ -34,13 +36,15 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         if status == 'information':
             self.statusbar.showMessage(info)
         elif status == 'warning':
-            QtWidgets.QMessageBox.information(self, ' 提示', info, QtWidgets.QMessageBox.Ok)
+            QtWidgets.QMessageBox.information(
+                self, ' 提示', info, QtWidgets.QMessageBox.Ok)
 
     def parse(self):
         sender = self.sender()
         if sender == self.start_button:
             if not re.match(r'.+\.(jpg|png)', self.lineEdit.text()):
-                QtWidgets.QMessageBox.warning(self, '警告', '图片错误', QtWidgets.QMessageBox.Ok)
+                QtWidgets.QMessageBox.warning(
+                    self, '警告', '图片错误', QtWidgets.QMessageBox.Ok)
             else:
                 t = Thread(target=self.start, args=())
                 t.start()
@@ -80,18 +84,13 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         result = response.read().decode()
         try:
             result = json.loads(result)['words_result']
-            # self.signal.emit('information', '')
             if not result:
                 self.signal.emit('warning', '未识别出文字。')
             else:
-                text = ''
 
                 self.statusbar.showMessage('识别成功')
                 for i in result:
                     self.textBrowser.append(i['words']+'\n')
-                    # text = text + i['words'] + '\n'
-
-                # self.signal.emit('information', text)
         except KeyError:
             self.signal.emit('warning', '失败！！！')
 
