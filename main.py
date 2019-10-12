@@ -95,6 +95,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             self.signal.emit('warning', '失败！！！')
 
 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ui = App()
