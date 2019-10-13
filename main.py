@@ -54,6 +54,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def start(self):
         self.signal.emit('information', '识别中。。。')
+        self.textBrowser.clearHistory()
         token = ocr_token()
         if token[0] == 1:
             self.signal.emit('warning', token[1])
