@@ -90,10 +90,9 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
 
                 self.statusbar.showMessage('识别成功')
                 for i in result:
-                    self.textBrowser.append(i['words']+'\n')
+                    self.textBrowser.append(i['words'] + '\n')
         except KeyError:
             self.signal.emit('warning', '失败！！！')
-
 
 
 if __name__ == '__main__':
