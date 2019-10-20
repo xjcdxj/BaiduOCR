@@ -20,7 +20,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowTitle('文字识别')
         self.image = None
         self.lineEdit.setText('输入图片地址')
-        self.textBrowser.setText('百度OCR')
+        # self.textBrowser.setText('百度OCR')
         self.binding()
 
     def binding(self):
@@ -87,10 +87,12 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             if not result:
                 self.signal.emit('warning', '未识别出文字。')
             else:
-
                 self.statusbar.showMessage('识别成功')
+                self.textBrowser.append('*' * len(self.lineEdit.text()))
+                self.textBrowser.append(self.lineEdit.text() + '\n')
                 for i in result:
                     self.textBrowser.append(i['words'] + '\n')
+                self.textBrowser.append('*' * len(self.lineEdit.text()) + '\n')
         except KeyError:
             self.signal.emit('warning', '失败！！！')
 
