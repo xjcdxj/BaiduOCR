@@ -38,6 +38,8 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         elif status == 'warning':
             QtWidgets.QMessageBox.information(
                 self, ' 提示', info, QtWidgets.QMessageBox.Ok)
+        elif status == 'show':
+            self.textBrowser.setText(info)
 
     def parse(self):
         sender = self.sender()
@@ -87,12 +89,16 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             if not result:
                 self.signal.emit('warning', '未识别出文字。')
             else:
+                # print(result)
                 self.statusbar.showMessage('识别成功')
-                self.textBrowser.append('*' * len(self.lineEdit.text()))
-                self.textBrowser.append(self.lineEdit.text() + '\n')
+                # self.textBrowser.append('*' * len(self.lineEdit.text()))
+                # self.textBrowser.append(self.lineEdit.text() + '\n')
+                text = ''
                 for i in result:
-                    self.textBrowser.append(i['words'] + '\n')
-                self.textBrowser.append('*' * len(self.lineEdit.text()) + '\n')
+                    text = text + i['words'] + '\n'
+                    self.signal.emit('show', text)
+                    # self.textBrowser.append(i['words'] + '\n')
+                # self.textBrowser.append('*' * len(self.lineEdit.text()) + '\n')
         except KeyError:
             self.signal.emit('warning', '失败！！！')
 

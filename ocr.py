@@ -42,7 +42,7 @@ def token():
 
 def ocr_test():
     OcrAip = aip()
-    image = get_file_content('C:/Users/XuJiacheng/OneDrive/图片/批注 2019-10-08 161104.png')
+    image = get_file_content('C:/Users/YuXjc/Pictures/批注 2019-10-21 162126.png')
     result = OcrAip.basicGeneral(image)['words_result']
     for i in result:
         print(i['words'])
@@ -80,4 +80,4 @@ def token_ocr():
 
 
 if __name__ == '__main__':
-    token_ocr()
+    ocr_test()
