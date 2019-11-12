@@ -2,11 +2,13 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created by: PyQt5 UI code generator 5.11.3
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -19,6 +21,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei")
+        self.lineEdit.setFont(font)
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayout.addWidget(self.lineEdit)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
@@ -39,6 +44,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.start_button)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
+        font = QtGui.QFont()
+        font.setFamily("Microsoft YaHei")
+        font.setPointSize(11)
+        self.textBrowser.setFont(font)
+        self.textBrowser.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.textBrowser.setObjectName("textBrowser")
         self.verticalLayout.addWidget(self.textBrowser)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -58,4 +68,3 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "选择图片"))
         self.start_button.setText(_translate("MainWindow", "开始"))
-
