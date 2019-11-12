@@ -49,12 +49,13 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton.clicked.connect(self.parse)
         self.signal.connect(self.warn)
         # self.textBrowser.mouseDoubleClickEvent()
-        self.textBrowser.customContextMenuRequested.connect(self.rightClicked)
+        self.textBrowser.customContextMenuRequested.connect(self.rightclicked)
         self.textBrowser.setToolTip("右键复制内容")
 
-    def rightClicked(self):
+    def rightclicked(self):
         # print(self.textBrowser.text())
         QtWidgets.QApplication.clipboard().setText(self.text)
+        self.statusbar.showMessage("复制成功")
         pass
 
     def choose_img(self):
@@ -115,6 +116,9 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             'Content-Type': 'application/x-www-form-urlencoded'
         }
         data = parse.urlencode(data).encode('utf-8')
+        if len(data) > 4 * 1204 * 1024:
+            self.signal.emit('warning', '图片大小超过4MB')
+            exit()
         rq = request.Request(url, headers=header, data=data)
         response = request.urlopen(rq)
         result = response.read().decode()
@@ -138,8 +142,8 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         except KeyError:
             self.signal.emit('warning', '失败！！！')
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     ui = App()
     ui.show()
