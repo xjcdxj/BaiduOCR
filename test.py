@@ -1,5 +1,14 @@
-import re
+from PyQt5 import QtWidgets
+import sys
 
-a = "file:///C:/Users/YuXjc/Pictures/批注 2019-11-11 205119.png"
-result = re.match(r'file:///(.+)', a)
-print(result.groups(1))
+def copy():
+    cl=QtWidgets.QApplication.clipboard()
+    graph.setPixmap(cl.pixmap())
+app=QtWidgets.QApplication(sys.argv)
+ui=QtWidgets.QMainWindow()
+graph=QtWidgets.QLabel(ui)
+graph.resize(500,300)
+burtton=QtWidgets.QPushButton(ui)
+burtton.clicked.connect(copy)
+ui.show()
+sys.exit(app.exec_())

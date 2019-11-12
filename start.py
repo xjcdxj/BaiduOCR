@@ -23,7 +23,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         self.text = ''
         self.lineEdit.setText('输入图片地址')
         self.setAcceptDrops(True)
-        # self.textBrowser.setText('百度OCR')
+        self.textBrowser.setText('基于百度OCR\n拖入图片直接开始识别')
         self.binding()
 
     def dragEnterEvent(self, env):
@@ -39,6 +39,8 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def dropEvent(self, env):
         self.lineEdit.setText(re.match(r'file:///(.+\.(jpg|png|tif|bmp))', env.mimeData().text()).groups()[0])
+        self.start_button.click()
+        self.statusbar.showMessage("")
 
     def dragMoveEvent(self, env):
         self.statusbar.showMessage("Release mouse")
@@ -55,6 +57,7 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
     def rightclicked(self):
         # print(self.textBrowser.text())
         QtWidgets.QApplication.clipboard().setText(self.text)
+
         self.statusbar.showMessage("复制成功")
         pass
 
@@ -69,12 +72,13 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             QtWidgets.QMessageBox.information(
                 self, ' 提示', info, QtWidgets.QMessageBox.Ok)
         elif status == 'show':
-            print(info)
+            # print(info)
             self.textBrowser.setText(info)
 
     def parse(self):
         sender = self.sender()
         if sender == self.start_button:
+            # pic=QtWidgets.QApplication.clipboard().pixmap()
             if os.path.exists(self.lineEdit.text()):
                 if not re.match(r'.+\.(jpg|png)', self.lineEdit.text()):
                     QtWidgets.QMessageBox.warning(
