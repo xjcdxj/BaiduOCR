@@ -5,9 +5,7 @@ import re
 import sys
 from threading import Thread
 from urllib import parse, request
-
 from PyQt5 import QtCore, QtWidgets
-
 from base import ocr_token
 from window import Ui_MainWindow
 
@@ -28,7 +26,6 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def dragEnterEvent(self, env):
         if re.match(r'.+\.(jpg|png|tif|bmp)', env.mimeData().text()):
-            # print('kk')
             env.accept()
             self.statusbar.showMessage("Release Mouse")
         else:
@@ -50,12 +47,10 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
         self.start_button.clicked.connect(self.parse)
         self.pushButton.clicked.connect(self.parse)
         self.signal.connect(self.warn)
-        # self.textBrowser.mouseDoubleClickEvent()
         self.textBrowser.customContextMenuRequested.connect(self.rightclicked)
         self.textBrowser.setToolTip("右键复制内容")
 
     def rightclicked(self):
-        # print(self.textBrowser.text())
         QtWidgets.QApplication.clipboard().setText(self.text)
 
         self.statusbar.showMessage("复制成功")
@@ -72,13 +67,11 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             QtWidgets.QMessageBox.information(
                 self, ' 提示', info, QtWidgets.QMessageBox.Ok)
         elif status == 'show':
-            # print(info)
             self.textBrowser.setText(info)
 
     def parse(self):
         sender = self.sender()
         if sender == self.start_button:
-            # pic=QtWidgets.QApplication.clipboard().pixmap()
             if os.path.exists(self.lineEdit.text()):
                 if not re.match(r'.+\.(jpg|png)', self.lineEdit.text()):
                     QtWidgets.QMessageBox.warning(
@@ -133,16 +126,10 @@ class App(QtWidgets.QMainWindow, Ui_MainWindow):
             else:
                 # print(result)
                 self.statusbar.showMessage('识别成功')
-                # self.textBrowser.append('*' * len(self.lineEdit.text()))
-                # self.textBrowser.append(self.lineEdit.text() + '\n')
                 self.text = ''
                 for i in result:
                     self.text = self.text + i['words'] + '\n'
                 self.signal.emit('show', self.text)
-
-                # print(text)
-                # self.textBrowser.append(i['words'] + '\n')
-                # self.textBrowser.append('*' * len(self.lineEdit.text()) + '\n')
         except KeyError:
             self.signal.emit('warning', '失败！！！')
 
